@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+function open_ff() {
+  firefox --new-tab "$1"
+}
+
+echo "Opening Firefox tab(s)..."
+
+open_ff https://bitcointicker.co/coinbase/btc/usd/1hr/

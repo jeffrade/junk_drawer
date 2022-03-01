@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+spd-say --rate -25 --volume -50 $(curl -s https://api-pub.bitfinex.com/v2/ticker/tBTCUSD | jq -r '.[6]' | xargs printf "%0.0f")
+

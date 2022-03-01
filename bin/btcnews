@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+
+function open_ff() {
+  firefox --new-tab "$1"
+}
+
+echo "Opening Firefox tab(s)..."
+
+open_ff https://www.coindesk.com/
+open_ff https://www.cnbc.com/bitcoin/
+open_ff https://dailyhodl.com/bitcoin-news/
+open_ff https://news.bitcoin.com/
+open_ff https://www.newsbtc.com/news/bitcoin/
+open_ff https://cointelegraph.com/tags/bitcoin
+open_ff https://bitcoinist.com/category/bitcoin/
+open_ff https://bitcoinnews.com/
+open_ff https://cryptonews.com/news/bitcoin-news/
