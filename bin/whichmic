@@ -1,0 +1,65 @@
+#!/bin/bash
+#
+# whichmic - Find which audio capture device is working
+#
+# USAGE:
+#   ./whichmic
+#
+# MANUAL TESTING:
+#   1. List all devices: arecord -l
+#   2. Record from device (e.g., 1,0): arecord -D "plughw:1,0" -f cd -d 5 test.wav
+#   3. Play back to verify: aplay test.wav
+#   4. Find working device and note the card,device number (e.g., 1,0)
+#
+
+if ! command -v arecord >/dev/null 2>&1; then
+  echo "You must install arecord"
+  exit 1
+fi
+
+check_device() {
+    local device=$1
+    # Record 5 seconds of audio from the device and test if any signal was captured
+    # device format is "card,devnum" (e.g., "1,0")
+    if arecord -D "plughw:$device" -f cd -d 5 /dev/null 2>/dev/null; then
+        echo "Audio detected on device: $device"
+        echo " to manually verify, run: arecord -D \"plughw:$device\" -f cd -d 5 test.wav && aplay test.wav"
+        echo "Device location: /dev/snd/pcmC${device%,*}D0c"
+        return 0
+    else
+        echo "No audio detected on device: $device"
+        return 1
+    fi
+}
+
+# Extract all available capture devices from arecord -l
+# Output format: "card,device" (e.g., "1,0", "1,2")
+# To see raw device info: arecord -l
+devices=$(arecord -l | grep -E 'card [0-9]+:.*device [0-9]+:' | sed 's/.*card \([0-9]\+\):.*device \([0-9]\+\):.*/\1,\2/')
+
+# Check if we found any devices
+if [[ -z "$devices" ]]; then
+    echo "No audio capture devices found."
+    exit 1
+fi
+
+# Check each device
+for device in $devices; do
+    echo "-------------------------------------"
+    echo "Now checking device: $device"
+    echo "Speak into your microphone now..."
+    sleep 2  # Give time for the user to prepare
+    
+    # Record for a short period (e.g., 5 seconds) and check audio activity
+    if check_device "$device"; then
+        exit 0  # Exit with success
+    fi
+
+    echo "Checking next device..."
+    echo "-------------------------------------"
+    sleep 2  # Short pause before checking the next device
+done
+
+# Exit the script after checking all devices
+echo "No more devices to check. Exiting..."
+exit 1
