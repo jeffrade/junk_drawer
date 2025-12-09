@@ -1,0 +1,269 @@
+# Example Voice Assistant Commands
+
+# This file contains additional example commands you can add to config.yaml
+
+wake_words:
+  - "hey assistant"
+  - "computer"
+
+commands:
+  # ==================== TIME & DATE ====================
+  - phrases:
+      - "what time is it"
+      - "tell me the time"
+      - "current time"
+      - "what's the time"
+    action:
+      type: "shell"
+      command: "date '+%I:%M %p'"
+    description: "Display current time"
+
+  - phrases:
+      - "what's the date"
+      - "today's date"
+      - "tell me the date"
+    action:
+      type: "shell"
+      command: "date '+%A, %B %d, %Y'"
+    description: "Display current date"
+
+  # ==================== SYSTEM INFO ====================
+  - phrases:
+      - "system status"
+      - "how is the system"
+      - "check system"
+      - "system info"
+    action:
+      type: "shell"
+      command: "echo '=== Uptime ===' && uptime && echo '' && echo '=== Disk ===' && df -h / | tail -1 && echo '' && echo '=== Memory ===' && free -h | grep Mem"
+    description: "Show system status (uptime, disk, memory)"
+
+  - phrases:
+      - "show uptime"
+      - "how long has it been running"
+    action:
+      type: "shell"
+      command: "uptime"
+    description: "Display system uptime"
+
+  - phrases:
+      - "disk usage"
+      - "how much disk space"
+      - "disk space"
+    action:
+      type: "shell"
+      command: "df -h / | tail -1"
+    description: "Show root partition disk usage"
+
+  - phrases:
+      - "memory usage"
+      - "how much memory"
+      - "ram usage"
+    action:
+      type: "shell"
+      command: "free -h"
+    description: "Display memory usage"
+
+  # ==================== FILE OPERATIONS ====================
+  - phrases:
+      - "list files"
+      - "list directory"
+      - "show files"
+      - "directory listing"
+    action:
+      type: "shell"
+      command: "ls -lh --group-directories-first"
+    description: "List files in current directory"
+
+  - phrases:
+      - "where am i"
+      - "current directory"
+      - "current path"
+      - "print working directory"
+    action:
+      type: "shell"
+      command: "pwd"
+    description: "Show current working directory"
+
+  - phrases:
+      - "make directory {dirname}"
+      - "create folder {dirname}"
+      - "create directory {dirname}"
+    action:
+      type: "shell"
+      command: "mkdir -p {dirname} && echo 'Created directory: {dirname}'"
+    description: "Create a new directory"
+
+  # ==================== APPLICATION LAUNCHING ====================
+  - phrases:
+      - "open {application}"
+      - "launch {application}"
+      - "start {application}"
+      - "run {application}"
+    action:
+      type: "shell"
+      command: "xdg-open {application} 2>/dev/null || {application} &"
+    description: "Open or launch an application"
+
+  - phrases:
+      - "open firefox"
+      - "launch firefox"
+      - "start browser"
+    action:
+      type: "shell"
+      command: "firefox &"
+    description: "Open Firefox browser"
+
+  - phrases:
+      - "open file manager"
+      - "open files"
+      - "show files"
+    action:
+      type: "shell"
+      command: "nautilus . &"
+    description: "Open file manager"
+
+  - phrases:
+      - "open terminal"
+      - "open console"
+    action:
+      type: "shell"
+      command: "gnome-terminal &"
+    description: "Open terminal"
+
+  # ==================== SYSTEM COMMANDS ====================
+  - phrases:
+      - "lock screen"
+      - "lock the screen"
+    action:
+      type: "shell"
+      command: "loginctl lock-session"
+    description: "Lock the screen"
+
+  - phrases:
+      - "logout"
+      - "log out"
+    action:
+      type: "shell"
+      command: "loginctl terminate-user $USER"
+    description: "Log out from the system"
+
+  - phrases:
+      - "update system"
+      - "system update"
+      - "apt update"
+    action:
+      type: "shell"
+      commands:
+        - "apt update"
+        - "apt upgrade -y"
+    description: "Update system packages"
+
+  - phrases:
+      - "restart"
+      - "reboot"
+    action:
+      type: "shell"
+      command: "sudo shutdown -r now"
+    description: "Reboot the system"
+
+  - phrases:
+      - "shutdown"
+      - "power off"
+      - "shut down"
+    action:
+      type: "shell"
+      command: "sudo shutdown -h now"
+    description: "Shut down the system"
+
+  # ==================== NETWORK ====================
+  - phrases:
+      - "what's my ip"
+      - "show ip address"
+      - "my ip"
+    action:
+      type: "shell"
+      command: "hostname -I"
+    description: "Show local IP address"
+
+  - phrases:
+      - "check internet"
+      - "test connection"
+      - "ping google"
+    action:
+      type: "shell"
+      command: "ping -c 1 8.8.8.8 && echo 'Internet OK' || echo 'No internet'"
+    description: "Test internet connectivity"
+
+  # ==================== TEXT MANIPULATION ====================
+  - phrases:
+      - "count files"
+      - "how many files"
+    action:
+      type: "shell"
+      command: "ls -1 | wc -l"
+    description: "Count files in current directory"
+
+  - phrases:
+      - "search for {query}"
+      - "find {query}"
+      - "grep {query}"
+    action:
+      type: "shell"
+      command: "grep -r '{query}' . 2>/dev/null | head -10"
+    description: "Search for text in files"
+
+  # ==================== AUDIO/MEDIA ====================
+  - phrases:
+      - "volume up"
+      - "increase volume"
+    action:
+      type: "shell"
+      command: "pactl set-sink-volume @DEFAULT_SINK@ +5%"
+    description: "Increase system volume"
+
+  - phrases:
+      - "volume down"
+      - "decrease volume"
+    action:
+      type: "shell"
+      command: "pactl set-sink-volume @DEFAULT_SINK@ -5%"
+    description: "Decrease system volume"
+
+  - phrases:
+      - "mute"
+      - "silence"
+    action:
+      type: "shell"
+      command: "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+    description: "Toggle mute"
+
+  # ==================== QUICK NOTES ====================
+  - phrases:
+      - "note {message}"
+      - "remember {message}"
+      - "save note {message}"
+    action:
+      type: "shell"
+      command: "echo '[{DATE}] {message}' >> ~/voice_notes.txt && echo 'Note saved'"
+    description: "Save a quick note"
+
+  - phrases:
+      - "show notes"
+      - "read notes"
+    action:
+      type: "shell"
+      command: "tail -20 ~/voice_notes.txt"
+    description: "Display recent notes"
+
+  # ==================== CONTROL ====================
+  - phrases:
+      - "stop listening"
+      - "goodbye"
+      - "exit"
+      - "quit"
+      - "bye"
+    action:
+      type: "builtin"
+      command: "exit"
+    description: "Stop the voice assistant"

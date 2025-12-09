@@ -1,0 +1,115 @@
+# Voice Assistant Configuration
+
+# List of wake words to listen for
+wake_words:
+  - "claudia"
+  - "scotty"
+
+# Audio configuration
+audio:
+  sample_rate: 16000              # Vosk requires 16kHz
+  device: null                    # null = auto-detect, or specify device number
+  noise_filter: false             # Enable experimental noise reduction
+
+# Vosk model configuration
+vosk:
+  model: "vosk-model-en-us-0.22"        # Model to use
+  cache_dir: "~/.cache/vosk"            # Where to cache models
+
+# Command execution timeout in seconds
+execution_timeout: 30
+
+# Fuzzy matching threshold (0.0 - 1.0)
+# Lower = more permissive, higher = stricter
+match_threshold: 0.50
+
+# Speech recognition confidence threshold (0.0 - 1.0)
+# Only accept recognized text if confidence >= this value
+# Lower = more permissive (accept uncertain speech), higher = stricter (require clear speech)
+confidence_threshold: 0.5
+
+# Voice commands
+commands:
+  # Simple shell command example
+  - phrases:
+      - "what time is it"
+      - "tell me the time"
+      - "current time"
+    action:
+      type: "shell"
+      command: "date '+%I:%M %p'"
+    description: "Display current time"
+
+  # Multiple shell commands in sequence
+  - phrases:
+      - "system update"
+      - "update system"
+    action:
+      type: "shell"
+      commands:
+        - "apt update"
+        - "apt upgrade -y"
+    description: "Update system packages"
+
+  # Check system status
+  - phrases:
+      - "system status"
+      - "how is the system"
+      - "check system"
+    action:
+      type: "shell"
+      command: "echo '=== Uptime ===' && uptime && echo '' && echo '=== Disk ===' && df -h / | tail -1 && echo '' && echo '=== Memory ===' && free -h | grep Mem"
+    description: "Show system status (uptime, disk, memory)"
+
+  # Directory listing
+  - phrases:
+      - "list files"
+      - "list directory"
+      - "show files"
+    action:
+      type: "shell"
+      command: "ls -lh --group-directories-first"
+    description: "List files in current directory"
+
+  # Show current directory
+  - phrases:
+      - "where am i"
+      - "current directory"
+      - "current path"
+    action:
+      type: "shell"
+      command: "pwd"
+    description: "Show current working directory"
+
+  # Python function example (stub - no custom_actions module yet)
+  # Uncomment after creating custom_actions.py
+  # - phrases:
+  #     - "what is the weather"
+  #     - "tell me the weather"
+  #   action:
+  #     type: "python"
+  #     function: "get_weather"
+  #     module: "voice_assistant.custom_actions"
+  #   description: "Get weather information"
+
+  # Echo test command
+  - phrases:
+      - "echo {text}"
+      - "print {text}"
+      - "say {text}"
+    action:
+      type: "shell"
+      command: "echo {text}"
+    description: "Echo text to terminal"
+
+  # Exit/stop command
+  - phrases:
+      - "stop listening"
+      - "stop claudia"
+      - "stop scotty"
+      - "shutdown claudia"
+      - "shutdown scotty"
+    action:
+      type: "builtin"
+      command: "exit"
+    description: "Stop the voice assistant"
